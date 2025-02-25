@@ -1,40 +1,30 @@
-            - name: HTTP Server Action
-  # You may pin to the exact commit or the version.
-  # uses: Eun/http-server-action@f71cec1321f665652a46c40b6852f8e5a68bfcd4
-  uses: Eun/http-server-action@v1.0.12
-  with:
-    # Directory to serve
-    directory: # optional, default is .
-    # Port to serve on
-    port: # optional, default is 8080
-    # Whether to set the Cache-Control header or not
-    no-cache: # optional
-    # If set and directory is requested, look for those files, instead of show directory listing
-    index-files: # optional, default is []
+name: Deploy with HTTP Server
 
-    # Throw HTTP-Error 405 on other methods than the methods given
-    allowed-methods: # optional, default is ["GET", "HEAD"]
+on:
+  push:
+    branches:
+      - main
 
-    # Content Types to serve
-    content-types: # optional, default is {
-  "appcache": "text/cache-manifest",
-  "css": "text/css",
-  "gif": "image/gif",
-  "html": "text/html",
-  "ico": "image/x-icon",
-  "jpeg": "image/jpeg",
-  "jpg": "image/jpeg",
-  "js": "text/javascript",
-  "json": "application/json",
-  "png": "image/png",
-  "txt": "text/plain",
-  "xml": "text/xml"
-}
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-    # Create a log file with given name
-    log: # optional, default is 
-    # Whether to include the time of access in the log file or not
-    logTime: # optional, default is true
-    # Path of the custom 404 page shown is the requested page is not found
-    custom404Page: # optional, default is 
-          
+    steps:
+      - name: Checkout репозиторію
+        uses: actions/checkout@v3
+
+      - name: Запуск HTTP Server
+        uses: Eun/http-server-action@v1.0.12
+        with:
+          directory: out
+          port: 8080
+          no-cache: true
+          index-files: [ "index.html" ]
+          allowed-methods: [ "GET", "HEAD" ]
+          custom404Page: out/404/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out
