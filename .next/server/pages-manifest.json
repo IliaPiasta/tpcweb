@@ -1,0 +1,13 @@
+{
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/404": "pages/404.html",
+  "/commands": "pages/commands.html",
+  "/fulltos": "pages/fulltos.html",
+  "/_app": "pages/_app.js",
+  "/": "pages/index.html",
+  "/partners": "pages/partners.html",
+  "/tos": "pages/tos.html",
+  "/privacy": "pages/privacy.html",
+  "/500": "pages/500.html"
+}
