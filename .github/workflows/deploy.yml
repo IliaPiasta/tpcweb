@@ -1,9 +1,9 @@
-name: Deploy with HTTP Server
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # або ваша основна гілка
 
 jobs:
   deploy:
@@ -13,17 +13,13 @@ jobs:
       - name: Checkout репозиторію
         uses: actions/checkout@v3
 
-      - name: Запуск HTTP Server
-        uses: Eun/http-server-action@v1.0.12
-        with:
-          directory: out
-          port: 8080
-          no-cache: true
-          index-files: [ "index.html" ]
-          allowed-methods: [ "GET", "HEAD" ]
-          custom404Page: out/404/index.html
+      - name: Встановлення залежностей
+        run: npm install  # якщо використовуєте npm
 
-      - name: Deploy to GitHub Pages
+      - name: Збірка проєкту
+        run: npm run build  # або інша команда для збірки
+
+      - name: Деплой на GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
