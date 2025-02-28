@@ -46,6 +46,6 @@ jobs:
         git config user.email "actions@github.com"
         git add .
         git commit -m "Deploy to GitHub Pages"
-        git push --force https://github.com/<твій_логін>/<репозиторій>.git master:gh-pages
+        git push --force https://github.com/IliaPiasta/tpcweb.git master:gh-pages
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Це забезпечує доступ до репозиторію для пушу
