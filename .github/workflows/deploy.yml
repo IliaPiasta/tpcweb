@@ -1,26 +1,51 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages with http-server
 
 on:
   push:
     branches:
-      - main  
+      - main  # або master, якщо ти використовуєш її
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout репозиторію
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Встановлення залежностей
-        run: npm install 
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'  # Вибери відповідну версію Node.js для твого проекту
 
-      - name: Збірка проєкту
-        run: npm run build  
+    - name: Install dependencies
+      run: npm install  # Встановлює залежності
 
-      - name: Деплой на GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out
+    - name: Build project
+      run: npm run build  # Збирає проект, зазвичай для React буде достатньо цього
+
+    - name: Install http-server
+      run: npm install -g http-server  # Встановлює http-server глобально
+
+    - name: Start http-server
+      run: |
+        http-server ./out -p 8080 &  # Запускає http-server на порту 8080
+        sleep 10  # Додаємо паузу, щоб сервер встиг запуститися
+
+    - name: Test the server
+      run: |
+        curl --head http://localhost:8080  # Перевіряє доступність сервера
+
+    - name: Deploy to GitHub Pages
+      run: |
+        mkdir -p gh-pages
+        cp -r out/* gh-pages/
+        cd gh-pages
+        git init
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add .
+        git commit -m "Deploy to GitHub Pages"
+        git push --force https://github.com/<твій_логін>/<репозиторій>.git master:gh-pages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Це забезпечує доступ до репозиторію для пушу
